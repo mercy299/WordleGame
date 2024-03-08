@@ -1,11 +1,15 @@
-from termcolor import colored
 import random
-import sys
 
 def read_random_word():
     with open("words.txt") as f:
-        word_array = f.read().splitlines()
-        return random.choice(word_array)
+        return random.choice(f.read().splitlines())
+
+def calculate_result(word, guess):
+    correct_letters = sum(1 for w, g in zip(word, guess) if w == g)
+    correct_positions = correct_letters
+    incorrect_positions = sum(1 for g in guess if g in word) - correct_letters
+    wrong_letters = 5 - correct_positions - incorrect_positions
+    return f"{correct_positions}G {incorrect_positions}Y {wrong_letters}W"
 
 print("Let's play Wordle:")
 print("Type a 5 letter word below and press Enter. You have 6 tries to guess the random word.\n")
@@ -13,22 +17,12 @@ print("Type a 5 letter word below and press Enter. You have 6 tries to guess the
 word = read_random_word()
 
 for attempt in range(1, 7):
-    guess = input("Attempt %i: " % attempt).lower()
-
-    sys.stdout.write('\x1b[1A')
-    sys.stdout.write('\x1b[2K')
-
-    correct_count = 0
-
-    for i in range(min(len(guess), 5)):
-        if guess[i] == word[i]:
-            correct_count += 1
-
-    print("Number of correct letters guessed:", correct_count)
+    guess = input(f"Attempt {attempt}: ").lower()
+    result = calculate_result(word, guess)
+    print("Result:", result)
     print("Guessed word:", guess)
-
     if guess == word:
-        print("Congratulations! You guessed the word in %i guesses." % attempt)
+        print(f"Congratulations! You guessed the word in {attempt} guesses.")
         break
     elif attempt == 6:
-        print("You didn't guess the word within 6 tries, it was '%s'" % word)
+        print(f"You didn't guess the word within 6 tries, it was '{word}'")
