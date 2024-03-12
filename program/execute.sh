@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Execute the Python program and capture its output
-python3 read.py ./filename.txt
+output=$(python3 read.py)
 
-# # Print the captured output
-# # echo "$output"
+# Print the captured output
+# echo "$output"
 
-# if [[ $output == *"Pending. *Applied at"* ]]; then
-#     echo "applying migration."
-# else
-#     echo "skipping migration."
-# fi
+if [[ $output == *"Pending"* ]]; then
+    echo "Applying migration..."
+else
+    echo "Skipping migration."
+fi
