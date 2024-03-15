@@ -1,13 +1,22 @@
 #!/bin/bash
 
 # Execute the Python program and capture its output
-output=$(python3 read.py)
+output=$(python3 read.py | tr [:upper:] [:lower:])
 
-# Print the captured output
-# echo "$output"
+regex="[0-9]{4}\/[0-9]{2}\/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\s*pending"
 
-if [[ $output == *"Pending"* ]]; then
-    echo "Applying migration..."
-else
-    echo "Skipping migration."
-fi
+apply_migrations_automatically=true
+
+# Use a while loop with read to iterate over each line
+echo -e "$output" | while IFS= read -r line; do
+    # Use grep to check for a match
+    if grep -qE "$regex" <<<"$line"; then
+        if $apply_migrations_automatically; then
+            echo "Applying migrations"
+        else
+            echo "Skipping migrations"
+        fi
+    else
+        echo "Skipping migrations"
+    fi
+done
