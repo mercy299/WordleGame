@@ -1,6 +1,6 @@
 # Open the file for reading 
 with open('filename.txt', 'r') as file: 
     # Read the contents of the file line by line
-    file_contents = file.readlines() 
+    file_contents = file.read() 
 
-    print("".join(file_contents)) 
+    print(file_contents)
